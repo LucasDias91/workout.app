@@ -28,7 +28,7 @@ export class TabsPage {
   }
 
   private syncFromUrl(url: string) {
-    this.hideTabBar = /\/tabs\/workouts\/\d+/.test(url);
+    this.hideTabBar = /\/tabs\/workouts\/\d+/.test(url) || /\/tabs\/profile\/settings/.test(url);
     const match = url.match(/\/tabs\/([^\/?#]+)/);
     this.selectedTab = match ? match[1] : 'home';
   }

@@ -6,6 +6,10 @@ const routes: Routes = [
   {
     path: '',
     component: ProfilePage
+  },
+  {
+    path: 'settings',
+    loadChildren: () => import('../profile-settings/profile-settings.module').then(m => m.ProfileSettingsPageModule)
   }
 ];
 

@@ -6,13 +6,41 @@
 
 <ion-content>
   <div class="page-content">
-    <ion-card>
+    <ion-card class="block">
       <ion-card-header>
-        <ion-card-title>Calendário</ion-card-title>
+        <ion-card-subtitle>Esta semana</ion-card-subtitle>
+        <ion-card-title>Peso corporal</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        <p class="muted">Os treinos realizados e a evolução entram nesta aba nas próximas etapas.</p>
+        <ion-item lines="none" class="field">
+          <ion-label position="stacked">kg</ion-label>
+          <ion-input type="number" inputmode="decimal" [(ngModel)]="weekWeight"></ion-input>
+        </ion-item>
+        <ion-button expand="block" color="primary" [disabled]="savingWeight" (click)="saveWeight()">
+          Salvar peso da semana
+        </ion-button>
       </ion-card-content>
     </ion-card>
+
+    <p class="section-label" *ngIf="pastWeights.length">Pesos anteriores</p>
+    <div class="row-card static" *ngFor="let item of pastWeights">
+      <div class="texts">
+        <h3>{{ item.weightKg }} kg</h3>
+        <p>Semana de {{ formatWeek(item.weekStart) }}</p>
+      </div>
+    </div>
+
+    <p class="section-label">Treinos executados</p>
+    <div class="empty" *ngIf="!logs.length">
+      <ion-icon name="calendar-outline"></ion-icon>
+      <p>Nenhum treino registrado ainda.</p>
+    </div>
+    <div class="row-card static" *ngFor="let log of logs">
+      <div class="texts">
+        <h3>Treino {{ log.letter }}</h3>
+        <p>{{ log.targetMuscle }}</p>
+        <p class="meta">{{ formatLogDate(log.endedAt) }} · {{ formatDuration(log.durationSec) }}</p>
+      </div>
+    </div>
   </div>
 </ion-content>

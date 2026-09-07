@@ -8,8 +8,35 @@
   box-shadow: none;
 }
 
-.section-label {
-  margin-top: 24px;
+.muted {
+  margin: 0 0 16px;
   color: var(--ion-color-medium);
-  font-size: 13px;
+}
+
+.last-log {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 16px;
+  padding: 16px;
+  border: 0;
+  border-radius: var(--app-card-radius);
+  background: var(--ion-card-background);
+  color: #fff;
+  text-align: left;
+
+  span {
+    color: var(--ion-color-medium);
+    font-size: 13px;
+  }
+
+  strong {
+    font-size: 15px;
+  }
+}
+
+ion-button {
+  height: 48px;
+  font-size: 16px;
 }

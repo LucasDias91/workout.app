@@ -5,15 +5,64 @@
 </ion-header>
 
 <ion-content>
-  <div class="page-content">
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Lucas</ion-card-title>
-        <ion-card-subtitle>Uso pessoal · offline</ion-card-subtitle>
-      </ion-card-header>
-      <ion-card-content>
-        <p class="muted">Dados, medidas e configurações entram nas próximas etapas. Sem login.</p>
-      </ion-card-content>
-    </ion-card>
+  <div class="page-content" *ngIf="profile && !editing">
+    <div class="identity">
+      <div class="avatar">{{ initial }}</div>
+      <h2>{{ profile.name }}</h2>
+      <p>{{ profile.goal }} · offline</p>
+      <button type="button" class="edit-link" (click)="startEdit()">Editar</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <span class="value">{{ profile.weightKg }} kg</span>
+        <span class="label">Peso</span>
+      </div>
+      <div class="stat">
+        <span class="value">{{ profile.heightCm }} cm</span>
+        <span class="label">Altura</span>
+      </div>
+    </div>
+
+    <button type="button" class="row-card" (click)="openHistory()">
+      <div class="texts">
+        <h3>Evolução</h3>
+        <p>Treinos feitos e progresso</p>
+      </div>
+      <ion-icon name="chevron-forward-outline"></ion-icon>
+    </button>
+
+    <button type="button" class="row-card" (click)="openSettings()">
+      <div class="texts">
+        <h3>Configurações</h3>
+        <p>Descanso, unidade e reset</p>
+      </div>
+      <ion-icon name="chevron-forward-outline"></ion-icon>
+    </button>
+  </div>
+
+  <div class="page-content" *ngIf="profile && editing">
+    <ion-item lines="none" class="field">
+      <ion-label position="stacked">Nome</ion-label>
+      <ion-input [(ngModel)]="profile.name"></ion-input>
+    </ion-item>
+    <ion-item lines="none" class="field">
+      <ion-label position="stacked">Objetivo</ion-label>
+      <ion-input [(ngModel)]="profile.goal"></ion-input>
+    </ion-item>
+    <ion-item lines="none" class="field">
+      <ion-label position="stacked">Peso (kg)</ion-label>
+      <ion-input type="number" inputmode="decimal" [(ngModel)]="profile.weightKg"></ion-input>
+    </ion-item>
+    <ion-item lines="none" class="field">
+      <ion-label position="stacked">Altura (cm)</ion-label>
+      <ion-input type="number" inputmode="decimal" [(ngModel)]="profile.heightCm"></ion-input>
+    </ion-item>
+    <ion-button expand="block" color="primary" [disabled]="saving" (click)="save()">
+      Salvar
+    </ion-button>
+    <ion-button expand="block" fill="clear" color="medium" (click)="cancelEdit()">
+      Cancelar
+    </ion-button>
   </div>
 </ion-content>

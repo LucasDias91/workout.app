@@ -1,29 +1,37 @@
 <ion-header class="ion-no-border">
   <ion-toolbar>
-    <ion-title class="page-title">Olá, Lucas!</ion-title>
-    <ion-buttons slot="end">
-      <ion-button fill="clear" color="light">
-        <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
+    <ion-title class="page-title">Olá, {{ name }}!</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <div class="home-content">
-    <ion-card class="workout-card">
+    <ion-card class="workout-card" *ngIf="today">
       <ion-card-header>
         <ion-card-subtitle>Treino do dia</ion-card-subtitle>
-        <ion-card-title>Treino A</ion-card-title>
+        <ion-card-title>Treino {{ today.letter }}</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        <p class="muted">Peito, ombro e tríceps</p>
-        <ion-button expand="block" color="primary">
+        <p class="muted">{{ today.targetMuscle }}</p>
+        <ion-button expand="block" color="primary" (click)="startWorkout()">
           Iniciar treino
         </ion-button>
       </ion-card-content>
     </ion-card>
 
-    <p class="section-label">As próximas telas entram nas etapas seguintes.</p>
+    <ion-card class="workout-card" *ngIf="!today">
+      <ion-card-header>
+        <ion-card-subtitle>Treino do dia</ion-card-subtitle>
+        <ion-card-title>Nenhum treino</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p class="muted">Marque um ciclo ativo na aba Treinos.</p>
+      </ion-card-content>
+    </ion-card>
+
+    <button type="button" class="last-log" *ngIf="lastLog" (click)="openHistory()">
+      <span>Último treino</span>
+      <strong>Treino {{ lastLog.letter }}</strong>
+    </button>
   </div>
 </ion-content>

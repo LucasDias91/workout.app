@@ -19,10 +19,28 @@
   </div>
 
   <div class="page-content" *ngIf="!loading && detail">
-    <div class="hero">
-      <ion-icon name="barbell-outline"></ion-icon>
-      <h2>{{ detail.workout.targetMuscle }}</h2>
-      <p>Peso, séries e descanso entram na próxima etapa.</p>
+    <p class="muscles">{{ detail.workout.targetMuscle }}</p>
+    <p class="hint">Marque quando terminar. O treino entra no histórico.</p>
+
+    <div class="exercise" *ngFor="let item of detail.exercises; let i = index">
+      <div class="thumb">
+        <ion-icon name="barbell-outline"></ion-icon>
+      </div>
+      <div class="texts">
+        <h3>{{ i + 1 }}. {{ item.name }}</h3>
+        <p>
+          {{ item.sxr }}
+          <span *ngIf="item.technique"> · {{ item.technique }}</span>
+        </p>
+      </div>
     </div>
   </div>
 </ion-content>
+
+<ion-footer class="ion-no-border" *ngIf="detail">
+  <div class="footer-inner">
+    <ion-button expand="block" color="primary" [disabled]="saving" (click)="complete()">
+      Concluir treino
+    </ion-button>
+  </div>
+</ion-footer>

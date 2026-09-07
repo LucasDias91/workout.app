@@ -2,24 +2,10 @@
   padding: 8px 16px 24px;
 }
 
-.block {
-  margin: 0 0 20px;
-  border-radius: var(--app-card-radius);
-  box-shadow: none;
-}
-
 .field {
-  --background: transparent;
-  --padding-start: 0;
-  --inner-padding-end: 0;
-  margin-bottom: 8px;
-}
-
-.section-label {
-  margin: 8px 4px 12px;
-  color: var(--ion-color-medium);
-  font-size: 13px;
-  font-weight: 600;
+  --background: var(--ion-card-background);
+  --border-radius: 12px;
+  margin-bottom: 12px;
 }
 
 .row-card {
@@ -27,7 +13,7 @@
   align-items: center;
   width: 100%;
   margin-bottom: 12px;
-  padding: 16px;
+  padding: 18px 16px;
   border: 0;
   border-radius: var(--app-card-radius);
   background: var(--ion-card-background);
@@ -36,7 +22,6 @@
 
   .texts {
     flex: 1;
-    min-width: 0;
   }
 
   h3 {
@@ -51,8 +36,9 @@
     font-size: 13px;
   }
 
-  .meta {
-    margin-top: 4px;
+  ion-icon {
+    font-size: 20px;
+    color: var(--ion-color-medium);
   }
 }
 
@@ -60,23 +46,14 @@
   cursor: default;
 }
 
-.empty {
-  padding: 32px 16px;
-  text-align: center;
+.hint {
+  margin: 8px 4px 16px;
   color: var(--ion-color-medium);
-
-  ion-icon {
-    font-size: 36px;
-    margin-bottom: 8px;
-  }
-
-  p {
-    margin: 0;
-    font-size: 14px;
-  }
+  font-size: 13px;
 }
 
 ion-button {
   height: 48px;
   font-size: 16px;
+  margin-top: 8px;
 }

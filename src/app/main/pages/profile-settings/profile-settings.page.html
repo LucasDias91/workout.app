@@ -1,0 +1,34 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/profile" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Configurações</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="page-content" *ngIf="profile">
+    <ion-item lines="none" class="field">
+      <ion-label position="stacked">Descanso padrão (segundos)</ion-label>
+      <ion-input type="number" inputmode="numeric" [(ngModel)]="profile.restDefaultSec"></ion-input>
+    </ion-item>
+
+    <div class="row-card static">
+      <div class="texts">
+        <h3>Unidade de carga</h3>
+        <p>kg</p>
+      </div>
+    </div>
+
+    <p class="hint">Uso pessoal · offline · sem login</p>
+
+    <ion-button expand="block" color="primary" [disabled]="saving" (click)="save()">
+      Salvar
+    </ion-button>
+
+    <ion-button expand="block" fill="outline" color="danger" (click)="confirmReset()">
+      Resetar tudo
+    </ion-button>
+  </div>
+</ion-content>

@@ -49,6 +49,15 @@ export class WorkoutsService {
     };
   }
 
+  async getTodayWorkout(): Promise<Workout> {
+    const program = await this.database.getActiveProgram();
+    if (!program) {
+      return null;
+    }
+    const workouts = await this.getWorkouts(program.id);
+    return workouts.find(item => item.isToday) || workouts[0] || null;
+  }
+
   async getWorkoutDetail(workoutId: number): Promise<WorkoutDetail> {
     const workout = await this.database.getWorkoutById(workoutId);
     if (!workout) {

@@ -6,11 +6,15 @@ import { SeedData } from '../../models/workouts/seed-data';
 import { Program } from '../../models/workouts/program';
 import { Workout } from '../../models/workouts/workout';
 import { WorkoutExercise } from '../../models/workouts/workout-exercise';
+import { WorkoutLog } from '../../models/workouts/workout-log';
+import { WeeklyWeight } from '../../models/users/weekly-weight';
 
 const DB_NAME = 'meu_treino.db';
 const SEED_VERSION = '3';
 const STORE_PROGRAM = 'meu_treino.user_active_program';
 const STORE_LETTER = 'meu_treino.user_active_letter';
+const STORE_LOGS = 'meu_treino.workout_logs';
+const STORE_WEIGHTS = 'meu_treino.weekly_weights';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +25,10 @@ export class DatabaseService {
   private memory: SeedData;
   private useSqlite = false;
   private activeLetter = 'A';
+  private memoryLogs: WorkoutLog[] = [];
+  private memoryWeights: WeeklyWeight[] = [];
+  private nextLogId = 1;
+  private nextWeightId = 1;
 
   constructor(
     private http: HttpClient,
@@ -135,12 +143,121 @@ export class DatabaseService {
     await this.writeActiveState(programId, letter || 'A', true);
   }
 
+  async logWorkout(workoutId: number, startedAt: string): Promise<void> {
+    await this.ready();
+    const endedAt = new Date().toISOString();
+    const durationSec = Math.max(0, Math.round((Date.parse(endedAt) - Date.parse(startedAt)) / 1000));
+    if (!this.useSqlite) {
+      const workout = this.memory.workouts.find(item => item.id === workoutId);
+      this.memoryLogs.unshift({
+        id: this.nextLogId++,
+        workoutId,
+        startedAt,
+        endedAt,
+        durationSec,
+        letter: workout ? workout.letter : '',
+        targetMuscle: workout ? workout.targetMuscle : ''
+      });
+      this.persistMemoryUserData();
+      return;
+    }
+    await this.sqliteDb.executeSql(
+      'INSERT INTO workout_log (workout_id, started_at, ended_at, duration_sec) VALUES (?, ?, ?, ?)',
+      [workoutId, startedAt, endedAt, durationSec]
+    );
+  }
+
+  async getWorkoutLogs(): Promise<WorkoutLog[]> {
+    await this.ready();
+    if (!this.useSqlite) {
+      return this.memoryLogs.slice();
+    }
+    const result = await this.sqliteDb.executeSql(
+      `SELECT l.id, l.workout_id, l.started_at, l.ended_at, l.duration_sec, w.letter, w.target_muscle
+       FROM workout_log l
+       INNER JOIN workout w ON w.id = l.workout_id
+       ORDER BY l.ended_at DESC`,
+      []
+    );
+    return this.readRows(result).map(row => ({
+      id: row.id,
+      workoutId: row.workout_id,
+      startedAt: row.started_at,
+      endedAt: row.ended_at,
+      durationSec: row.duration_sec,
+      letter: row.letter,
+      targetMuscle: row.target_muscle
+    }));
+  }
+
+  async saveWeeklyWeight(weekStart: string, weightKg: number): Promise<void> {
+    await this.ready();
+    if (!this.useSqlite) {
+      const current = this.memoryWeights.find(item => item.weekStart === weekStart);
+      if (current) {
+        current.weightKg = weightKg;
+      } else {
+        this.memoryWeights.unshift({
+          id: this.nextWeightId++,
+          weekStart,
+          weightKg
+        });
+      }
+      this.memoryWeights.sort((a, b) => b.weekStart.localeCompare(a.weekStart));
+      this.persistMemoryUserData();
+      return;
+    }
+    await this.sqliteDb.executeSql(
+      'INSERT OR REPLACE INTO weekly_weight (week_start, weight_kg) VALUES (?, ?)',
+      [weekStart, weightKg]
+    );
+  }
+
+  async getWeeklyWeights(): Promise<WeeklyWeight[]> {
+    await this.ready();
+    if (!this.useSqlite) {
+      return this.memoryWeights.slice();
+    }
+    const result = await this.sqliteDb.executeSql(
+      'SELECT id, week_start, weight_kg FROM weekly_weight ORDER BY week_start DESC',
+      []
+    );
+    return this.readRows(result).map(row => ({
+      id: row.id,
+      weekStart: row.week_start,
+      weightKg: row.weight_kg
+    }));
+  }
+
+  async resetUserData(): Promise<void> {
+    await this.ready();
+    this.memoryLogs = [];
+    this.memoryWeights = [];
+    this.nextLogId = 1;
+    this.nextWeightId = 1;
+    this.removeLocal(STORE_LOGS);
+    this.removeLocal(STORE_WEIGHTS);
+    this.removeLocal(STORE_PROGRAM);
+    this.removeLocal(STORE_LETTER);
+    this.removeLocal('meu_treino.profile_proto');
+    if (this.useSqlite && this.sqliteDb) {
+      await this.sqliteDb.executeSql('DELETE FROM workout_log', []);
+      await this.sqliteDb.executeSql('DELETE FROM weekly_weight', []);
+      await this.sqliteDb.executeSql('DELETE FROM meta WHERE key IN (?, ?)', [
+        'user_active_program',
+        'user_active_letter'
+      ]);
+    }
+    await this.writeActiveState(2, 'A', false);
+  }
+
   private async open(): Promise<void> {
     await this.platform.ready();
     const seed = await this.http.get<SeedData>('assets/data/seed.json').toPromise();
     this.useSqlite = !!(window as any).sqlitePlugin;
     if (!this.useSqlite) {
       this.memory = seed;
+      this.loadMemoryUserData();
       await this.applyStoredActive();
       return;
     }
@@ -191,6 +308,19 @@ export class DatabaseService {
         rest_max_sec INTEGER,
         FOREIGN KEY (workout_id) REFERENCES workout(id),
         FOREIGN KEY (exercise_id) REFERENCES exercise(id)
+      )`,
+      `CREATE TABLE IF NOT EXISTS workout_log (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        workout_id INTEGER NOT NULL,
+        started_at TEXT NOT NULL,
+        ended_at TEXT NOT NULL,
+        duration_sec INTEGER NOT NULL,
+        FOREIGN KEY (workout_id) REFERENCES workout(id)
+      )`,
+      `CREATE TABLE IF NOT EXISTS weekly_weight (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        week_start TEXT NOT NULL UNIQUE,
+        weight_kg REAL NOT NULL
       )`
     ];
     for (const sql of statements) {
@@ -401,6 +531,35 @@ export class DatabaseService {
       window.localStorage.setItem(key, value);
     } catch {
       return;
+    }
+  }
+
+  private removeLocal(key: string): void {
+    try {
+      window.localStorage.removeItem(key);
+    } catch {
+      return;
+    }
+  }
+
+  private loadMemoryUserData(): void {
+    this.memoryLogs = this.readJson<WorkoutLog[]>(STORE_LOGS, []);
+    this.memoryWeights = this.readJson<WeeklyWeight[]>(STORE_WEIGHTS, []);
+    this.nextLogId = this.memoryLogs.reduce((max, item) => Math.max(max, item.id), 0) + 1;
+    this.nextWeightId = this.memoryWeights.reduce((max, item) => Math.max(max, item.id), 0) + 1;
+  }
+
+  private persistMemoryUserData(): void {
+    this.writeLocal(STORE_LOGS, JSON.stringify(this.memoryLogs));
+    this.writeLocal(STORE_WEIGHTS, JSON.stringify(this.memoryWeights));
+  }
+
+  private readJson<T>(key: string, fallback: T): T {
+    try {
+      const raw = this.readLocal(key);
+      return raw ? JSON.parse(raw) as T : fallback;
+    } catch {
+      return fallback;
     }
   }
 }
