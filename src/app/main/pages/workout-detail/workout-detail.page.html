@@ -3,22 +3,45 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/workouts" text=""></ion-back-button>
     </ion-buttons>
-    <ion-title *ngIf="detail">Treino {{ detail.workout.letter }}</ion-title>
+    <ion-title>
+      <div class="title-nav" *ngIf="detail">
+        <ion-button fill="clear" color="light" (click)="goTo(previousId)" [disabled]="!previousId">
+          <ion-icon slot="icon-only" name="chevron-back"></ion-icon>
+        </ion-button>
+        <span>Treino {{ detail.workout.letter }}</span>
+        <ion-button fill="clear" color="light" (click)="goTo(nextId)" [disabled]="!nextId">
+          <ion-icon slot="icon-only" name="chevron-forward"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="detail">
-  <div class="page-content">
+<ion-content>
+  <div class="page-content ion-padding" *ngIf="loading">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+  </div>
+
+  <div class="empty" *ngIf="!loading && !detail">
+    <ion-icon name="alert-circle-outline"></ion-icon>
+    <p>Treino não encontrado.</p>
+    <ion-button fill="clear" color="primary" [routerLink]="['/tabs/workouts']">Voltar</ion-button>
+  </div>
+
+  <div class="page-content" *ngIf="!loading && detail">
     <p class="muscles">{{ detail.workout.targetMuscle }}</p>
 
     <div class="exercise" *ngFor="let item of detail.exercises; let i = index">
-      <div class="index">{{ i + 1 }}</div>
+      <div class="thumb">
+        <ion-icon name="barbell-outline"></ion-icon>
+      </div>
       <div class="texts">
-        <h3>{{ item.name }}</h3>
+        <h3>{{ i + 1 }}. {{ item.name }}</h3>
         <p>
           {{ item.sxr }}
           <span *ngIf="item.technique"> · {{ item.technique }}</span>
         </p>
+        <p class="rest" *ngIf="item.restPeriod">Descanso {{ item.restPeriod }}</p>
       </div>
     </div>
   </div>

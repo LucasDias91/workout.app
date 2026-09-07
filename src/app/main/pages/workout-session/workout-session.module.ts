@@ -2,16 +2,16 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-import { WorkoutDetailPage } from './workout-detail.page';
-import { WorkoutDetailPageRoutingModule } from './workout-detail-routing.module';
+import { WorkoutSessionPage } from './workout-session.page';
+import { WorkoutSessionPageRoutingModule } from './workout-session-routing.module';
 
 @NgModule({
   imports: [
     CommonModule,
     IonicModule,
     RouterModule,
-    WorkoutDetailPageRoutingModule
+    WorkoutSessionPageRoutingModule
   ],
-  declarations: [WorkoutDetailPage]
+  declarations: [WorkoutSessionPage]
 })
-export class WorkoutDetailPageModule {}
+export class WorkoutSessionPageModule {}

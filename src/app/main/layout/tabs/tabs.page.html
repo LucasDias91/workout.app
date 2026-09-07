@@ -1,5 +1,5 @@
 <ion-tabs>
-  <ion-tab-bar slot="bottom">
+  <ion-tab-bar slot="bottom" [class.hide-tabs]="hideTabBar" [selectedTab]="selectedTab">
     <ion-tab-button *ngFor="let item of tabs" [tab]="item.tab">
       <ion-icon [name]="item.iconOutline"></ion-icon>
       <ion-label>{{ item.title }}</ion-label>

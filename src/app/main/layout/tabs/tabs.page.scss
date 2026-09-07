@@ -2,6 +2,10 @@ ion-tab-bar {
   box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.35);
 }
 
+ion-tab-bar.hide-tabs {
+  display: none !important;
+}
+
 ion-tab-button {
   ion-icon {
     font-size: 22px;

@@ -36,6 +36,19 @@ export class WorkoutsService {
     await this.database.setActive(programId, letter);
   }
 
+  async getAdjacentWorkoutIds(workoutId: number): Promise<{ previousId: number; nextId: number }> {
+    const workout = await this.database.getWorkoutById(workoutId);
+    if (!workout) {
+      return { previousId: null, nextId: null };
+    }
+    const list = await this.database.getWorkoutsByProgram(workout.programId);
+    const index = list.findIndex(item => item.id === workoutId);
+    return {
+      previousId: index > 0 ? list[index - 1].id : null,
+      nextId: index >= 0 && index < list.length - 1 ? list[index + 1].id : null
+    };
+  }
+
   async getWorkoutDetail(workoutId: number): Promise<WorkoutDetail> {
     const workout = await this.database.getWorkoutById(workoutId);
     if (!workout) {

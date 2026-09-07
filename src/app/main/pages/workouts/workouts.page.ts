@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { NavController, ToastController } from '@ionic/angular';
+import { Component } from '@angular/core';
+import { NavController, ToastController, ViewWillEnter } from '@ionic/angular';
 import { Program } from '../../../core/models/workouts/program';
 import { Workout } from '../../../core/models/workouts/workout';
 import { WorkoutsService } from '../../../core/services/workouts/workouts.service';
@@ -9,7 +9,7 @@ import { WorkoutsService } from '../../../core/services/workouts/workouts.servic
   templateUrl: './workouts.page.html',
   styleUrls: ['./workouts.page.scss']
 })
-export class WorkoutsPage implements OnInit {
+export class WorkoutsPage implements ViewWillEnter {
   programs: Program[] = [];
   program: Program;
   workouts: Workout[] = [];
@@ -38,8 +38,9 @@ export class WorkoutsPage implements OnInit {
     private toastCtrl: ToastController
   ) {}
 
-  async ngOnInit() {
-    await this.reloadPrograms(true);
+  async ionViewWillEnter() {
+    const jumpToActive = !this.program;
+    await this.reloadPrograms(jumpToActive);
     this.loading = false;
   }
 

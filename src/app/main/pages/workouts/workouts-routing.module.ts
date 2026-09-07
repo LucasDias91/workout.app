@@ -8,6 +8,10 @@ const routes: Routes = [
     component: WorkoutsPage
   },
   {
+    path: ':id/session',
+    loadChildren: () => import('../workout-session/workout-session.module').then(m => m.WorkoutSessionPageModule)
+  },
+  {
     path: ':id',
     loadChildren: () => import('../workout-detail/workout-detail.module').then(m => m.WorkoutDetailPageModule)
   }
