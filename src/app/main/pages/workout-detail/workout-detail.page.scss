@@ -1,0 +1,59 @@
+.page-content {
+  padding: 8px 16px 24px;
+}
+
+.muscles {
+  margin: 0 0 20px;
+  color: var(--ion-color-medium);
+  font-size: 15px;
+}
+
+.exercise {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.index {
+  width: 28px;
+  margin-top: 2px;
+  color: var(--ion-color-medium);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.texts {
+  flex: 1;
+  min-width: 0;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--ion-border-color);
+
+  h3 {
+    margin: 0 0 4px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 0;
+    color: var(--ion-color-medium);
+    font-size: 13px;
+  }
+}
+
+.exercise:last-child .texts {
+  border-bottom: 0;
+}
+
+ion-footer {
+  background: var(--ion-background-color);
+}
+
+.footer-inner {
+  padding: 8px 16px calc(12px + env(safe-area-inset-bottom));
+}
+
+ion-button {
+  height: 48px;
+  font-size: 16px;
+}

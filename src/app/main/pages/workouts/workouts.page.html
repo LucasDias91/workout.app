@@ -1,18 +1,51 @@
 <ion-header class="ion-no-border">
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button fill="clear" color="light" (click)="previous()" [disabled]="!hasPrevious">
+        <ion-icon slot="icon-only" name="chevron-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
     <ion-title class="page-title">Treinos</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" color="light" (click)="next()" [disabled]="!hasNext">
+        <ion-icon slot="icon-only" name="chevron-forward"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div class="page-content">
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Lista de treinos</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p class="muted">A, B, C e D entram depois, a partir das tabelas do Excel.</p>
-      </ion-card-content>
-    </ion-card>
+  <div class="page-content ion-padding" *ngIf="loading">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+  </div>
+  <div class="page-content" *ngIf="!loading">
+    <div class="program-meta" *ngIf="program">
+      <p>
+        #{{ program.id }} · {{ program.type }} · {{ programDate }}
+      </p>
+      <span class="active-badge" *ngIf="program.isActive">Ativo</span>
+      <button type="button" class="activate-link" *ngIf="!program.isActive" (click)="activateProgram()">
+        Marcar como ativo
+      </button>
+    </div>
+
+    <div
+      class="workout-card"
+      *ngFor="let workout of workouts"
+      [class.today]="workout.isToday"
+      (click)="openWorkout(workout)">
+      <div class="texts">
+        <h2>Treino {{ workout.letter }}</h2>
+        <p>{{ workout.targetMuscle }}</p>
+      </div>
+      <ion-button
+        fill="clear"
+        color="light"
+        class="pin-button"
+        (click)="activateWorkout(workout, $event)">
+        <ion-icon slot="icon-only" [name]="workout.isToday ? 'bookmark' : 'bookmark-outline'"></ion-icon>
+      </ion-button>
+      <ion-icon class="chevron" name="chevron-forward-outline"></ion-icon>
+    </div>
   </div>
 </ion-content>

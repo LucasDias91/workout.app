@@ -1,0 +1,33 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/workouts" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title *ngIf="detail">Treino {{ detail.workout.letter }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="detail">
+  <div class="page-content">
+    <p class="muscles">{{ detail.workout.targetMuscle }}</p>
+
+    <div class="exercise" *ngFor="let item of detail.exercises; let i = index">
+      <div class="index">{{ i + 1 }}</div>
+      <div class="texts">
+        <h3>{{ item.name }}</h3>
+        <p>
+          {{ item.sxr }}
+          <span *ngIf="item.technique"> · {{ item.technique }}</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer class="ion-no-border" *ngIf="detail">
+  <div class="footer-inner">
+    <ion-button expand="block" color="primary" (click)="startWorkout()">
+      Iniciar treino
+    </ion-button>
+  </div>
+</ion-footer>

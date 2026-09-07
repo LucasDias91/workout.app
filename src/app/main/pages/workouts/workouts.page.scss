@@ -1,9 +1,105 @@
 .page-content {
-  padding: 8px 16px 24px;
+  padding: 4px 16px 24px;
 }
 
-ion-card {
-  margin: 0;
+ion-toolbar {
+  ion-title {
+    pointer-events: none;
+  }
+
+  ion-buttons {
+    position: relative;
+    z-index: 10;
+  }
+
+  ion-button[disabled] {
+    opacity: 0.25;
+  }
+}
+
+.program-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 4px 16px;
+  color: var(--ion-color-medium);
+  font-size: 13px;
+
+  p {
+    margin: 0;
+    flex: 1;
+  }
+}
+
+.active-badge {
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: rgba(229, 57, 53, 0.2);
+  color: var(--ion-color-primary);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.activate-link {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ion-color-primary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.workout-card {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 18px 16px;
+  border: 0;
   border-radius: var(--app-card-radius);
-  box-shadow: none;
+  background: var(--ion-card-background);
+  text-align: left;
+  color: #fff;
+  cursor: pointer;
+
+  .texts {
+    flex: 1;
+    min-width: 0;
+  }
+
+  h2 {
+    margin: 0 0 4px;
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0;
+    color: var(--ion-color-medium);
+    font-size: 14px;
+  }
+
+  ion-icon.chevron {
+    font-size: 20px;
+    color: var(--ion-color-medium);
+    flex-shrink: 0;
+  }
+}
+
+.pin-button {
+  --padding-start: 4px;
+  --padding-end: 4px;
+  margin: 0 4px 0 0;
+  height: 36px;
+}
+
+.workout-card.today {
+  background: linear-gradient(90deg, #b71c1c 0%, #e53935 100%);
+
+  p,
+  ion-icon {
+    color: rgba(255, 255, 255, 0.85);
+  }
 }
